@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#142a3a">
+<title>فندق ومطعم حرض الدولي</title>
+<style>
+:root{--navy:#142a3a;--gold:#c99a43;--bg:#f6f4ef;--ink:#1d2932;--muted:#697782;--line:#e7e2d8}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--ink)}
+header{background:linear-gradient(135deg,#102432,#1d4054);color:white;padding:24px 18px 28px;border-radius:0 0 24px 24px}
+.brand{color:#f0c66f;font-size:12px;letter-spacing:1px}h1{font-size:25px;margin:8px 0}header p{color:#d5e0e6;margin:0;font-size:14px}
+main{max-width:760px;margin:auto;padding:16px}.notice{background:#fff7e6;border:1px solid #eed8a8;padding:12px;border-radius:12px;font-size:13px;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.tile{background:white;border:1px solid var(--line);border-radius:16px;padding:16px;min-height:112px;text-align:right}
+.tile .emoji{font-size:26px}.tile b{display:block;margin:8px 0 4px}.tile small{color:var(--muted)}
+.panel{background:white;border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:14px}
+h2{font-size:18px;margin:0 0 12px}.field{display:block;margin:10px 0;font-size:13px;color:#53616b}
+input,select,textarea{width:100%;padding:12px;border:1px solid #d9dfe2;border-radius:10px;font:inherit;background:#fff;color:var(--ink);margin-top:5px}
+button{border:0;border-radius:10px;padding:12px 15px;background:var(--navy);color:white;font:inherit;font-weight:700;cursor:pointer}
+button.secondary{background:#f3e8d2;color:#604416}button:disabled{opacity:.5}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.status{font-size:13px;margin-top:10px;color:var(--muted);white-space:pre-wrap}
+.hidden{display:none!important}.tabs{display:flex;gap:8px;overflow:auto;margin:14px 0}.tabs button{white-space:nowrap;background:#e9e5dc;color:#293a44}.tabs button.active{background:var(--navy);color:white}
+.item{border:1px solid var(--line);padding:12px;border-radius:12px;margin:8px 0}.row{display:flex;justify-content:space-between;gap:8px;align-items:center}
+footer{text-align:center;padding:24px;color:var(--muted);font-size:12px}
+@media(min-width:560px){header{padding:30px calc((100% - 720px)/2 + 20px)}.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+</style></head>
+<body>
+<header><div class="brand">HARADH INTERNATIONAL</div><h1>فندق ومطعم حرض الدولي</h1><p>الضيافة تبدأ من هنا — الطلبات والحجوزات والإدارة في مكان واحد</p></header>
+<main>
+<div id="configNotice" class="notice">نسخة تجريبية: اربط قاعدة بيانات Supabase من ملف الإعدادات قبل استقبال بيانات حقيقية.</div>
+<div class="grid">
+<button class="tile" onclick="show('order')"><span class="emoji">🍽️</span><b>طلب من المطعم</b><small>إرسال طلب جديد</small></button>
+<button class="tile" onclick="show('booking')"><span class="emoji">🛏️</span><b>حجز غرفة</b><small>طلب حجز فندقي</small></button>
+<button class="tile" onclick="show('complaint')"><span class="emoji">💬</span><b>الشكاوى والملاحظات</b><small>أرسل ملاحظتك</small></button>
+<button class="tile" onclick="show('staff')"><span class="emoji">🔐</span><b>دخول الإدارة</b><small>للمالك والموظفين</small></button>
+</div>
+
+<section id="order" class="panel hidden"><h2>طلب من المطعم</h2>
+<label class="field">الاسم<input id="oName" placeholder="اسم العميل"></label>
+<label class="field">رقم الهاتف<input id="oPhone" type="tel" placeholder="رقم للتواصل"></label>
+<label class="field">رقم الغرفة (اختياري)<input id="oRoom" placeholder="مثال: 204"></label>
+<label class="field">تفاصيل الطلب<textarea id="oDetails" rows="3" placeholder="الأصناف والكميات وأي ملاحظات"></textarea></label>
+<div class="row"><label class="field" style="flex:1">العملة<select id="currency"><option value="YER">ريال يمني (YER)</option><option value="SAR">ريال سعودي (SAR)</option><option value="USD">دولار أمريكي (USD)</option><option value="OTHER">أخرى</option></select></label><label class="field" style="flex:1">الإجمالي التقديري<input id="oTotal" type="number" min="0" placeholder="0"></label></div>
+<button onclick="submitOrder()">إرسال الطلب</button><div id="orderStatus" class="status"></div></section>
+
+<section id="booking" class="panel hidden"><h2>طلب حجز غرفة</h2>
+<label class="field">الاسم<input id="bName" placeholder="الاسم الكامل"></label>
+<label class="field">رقم الهاتف<input id="bPhone" type="tel" placeholder="رقم للتواصل"></label>
+<label class="field">نوع الغرفة<select id="bType"><option>غرفة مفردة</option><option>غرفة مزدوجة</option><option>جناح</option><option>يرجى تحديد المتاح</option></select></label>
+<div class="row"><label class="field" style="flex:1">تاريخ الدخول<input id="bIn" type="date"></label><label class="field" style="flex:1">تاريخ الخروج<input id="bOut" type="date"></label></div>
+<label class="field">عدد النزلاء<input id="bGuests" type="number" min="1" value="1"></label>
+<button onclick="submitBooking()">إرسال طلب الحجز</button><div id="bookingStatus" class="status"></div></section>
+
+<section id="complaint" class="panel hidden"><h2>الشكاوى والملاحظات</h2>
+<label class="field">الاسم (اختياري)<input id="cName" placeholder="اسمك"></label><label class="field">رقم الهاتف (اختياري)<input id="cPhone" type="tel" placeholder="رقم التواصل"></label>
+<label class="field">الرسالة<textarea id="cMessage" rows="4" placeholder="اكتب ملاحظتك هنا"></textarea></label>
+<button onclick="submitComplaint()">إرسال الملاحظة</button><div id="complaintStatus" class="status"></div></section>
+
+<section id="staff" class="panel hidden"><h2>دخول الإدارة</h2><p style="font-size:13px;color:#697782">تسجيل الدخول مخصص للحسابات التي ينشئها المالك في Supabase Auth. لا يوجد حساب افتراضي.</p>
+<label class="field">البريد الإلكتروني<input id="loginEmail" type="email" autocomplete="username" placeholder="admin@example.com"></label>
+<label class="field">كلمة المرور<input id="loginPassword" type="password" autocomplete="current-password" placeholder="كلمة المرور"></label>
+<div class="actions"><button onclick="login()">تسجيل الدخول</button><button class="secondary" onclick="logout()">تسجيل الخروج</button></div><div id="loginStatus" class="status"></div>
+<div id="adminPanel" class="hidden"><div class="tabs"><button class="active" onclick="adminTab('orders',this)">الطلبات</button><button onclick="adminTab('bookings',this)">الحجوزات</button><button onclick="adminTab('complaints',this)">الملاحظات</button></div>
+<div class="actions"><button onclick="loadAdmin('orders')">تحديث الطلبات</button><button onclick="loadAdmin('bookings')">تحديث الحجوزات</button><button onclick="loadAdmin('complaints')">تحديث الملاحظات</button></div><div id="adminList" class="status"></div></div>
+</section>
+<footer>فندق ومطعم حرض الدولي · نسخة تأسيسية قابلة للتطوير</footer>
+</main>
+<script src="app-config.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const cfg=window.APP_CONFIG||{};
+const ready=!!(cfg.supabaseUrl&&cfg.supabaseAnonKey&&!cfg.supabaseUrl.includes("YOUR_")&&!cfg.supabaseAnonKey.includes("YOUR_"));
+let accessToken=null, currentRole=null, currentAdminTab='orders';
+if(ready){$('configNotice').classList.add('hidden')} else {$('configNotice').textContent='لم يتم ربط قاعدة البيانات بعد. يمكنك تجربة الواجهات، لكن حفظ الطلبات وتسجيل الدخول لن يعمل حتى إعداد Supabase.'}
+function show(id){['order','booking','complaint','staff'].forEach(x=>$(x).classList.toggle('hidden',x!==id));window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})}
+function status(id,msg){$(id).textContent=msg}
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+async function api(path, opts={}) {
+ if(!ready) throw new Error('قاعدة البيانات غير مضبوطة. راجع README_AR.md وملف app-config.js');
+ const headers={'apikey':cfg.supabaseAnonKey,'Content-Type':'application/json',...(opts.headers||{})};
+ if(accessToken) headers.Authorization='Bearer '+accessToken;
+ const r=await fetch(cfg.supabaseUrl.replace(/\/$/,'')+path,{...opts,headers});
+ const txt=await r.text(); let data=null; try{data=txt?JSON.parse(txt):null}catch{}
+ if(!r.ok) throw new Error((data&&data.message)||('فشل الطلب: HTTP '+r.status+' '+txt.slice(0,180)));
+ return data;
+}
+async function insert(table,obj){return api('/rest/v1/'+table,{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify(obj)})}
+async function submitOrder(){try{const name=$('oName').value.trim(),details=$('oDetails').value.trim();if(!name||!details)throw Error('أدخل الاسم وتفاصيل الطلب.');await insert('orders',{customer_name:name,phone:$('oPhone').value.trim(),room_number:$('oRoom').value.trim()||null,details,total:Number($('oTotal').value||0),currency:$('currency').value,status:'new'});status('orderStatus','تم إرسال الطلب بنجاح.');}catch(e){status('orderStatus',e.message)}}
+async function submitBooking(){try{const name=$('bName').value.trim(),phone=$('bPhone').value.trim(),ci=$('bIn').value,co=$('bOut').value;if(!name||!phone||!ci||!co)throw Error('أكمل الاسم والهاتف وتاريخي الدخول والخروج.');if(co<=ci)throw Error('تاريخ الخروج يجب أن يكون بعد الدخول.');await insert('bookings',{customer_name:name,phone,room_type:$('bType').value,check_in:ci,check_out:co,guests:Number($('bGuests').value||1),status:'pending'});status('bookingStatus','وصل طلب الحجز. سيؤكد الفندق التوفر والسعر.');}catch(e){status('bookingStatus',e.message)}}
+async function submitComplaint(){try{const message=$('cMessage').value.trim();if(!message)throw Error('اكتب الرسالة أولاً.');await insert('complaints',{customer_name:$('cName').value.trim()||null,phone:$('cPhone').value.trim()||null,message,status:'new'});status('complaintStatus','تم إرسال ملاحظتك، شكرًا لك.')}catch(e){status('complaintStatus',e.message)}}
+async function login(){try{if(!ready)throw Error('أكمل إعداد Supabase أولاً.');const d=await api('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email:$('loginEmail').value.trim(),password:$('loginPassword').value})});accessToken=d.access_token;const p=await api('/rest/v1/profiles?select=display_name,role&id=eq.'+encodeURIComponent(d.user.id));if(!p||!p.length)throw Error('الحساب لا يملك ملف صلاحيات في جدول profiles. اطلب من المالك ضبطه.');currentRole=p[0].role;$('adminPanel').classList.remove('hidden');status('loginStatus','تم الدخول. الدور: '+currentRole);await loadAdmin('orders')}catch(e){accessToken=null;status('loginStatus',e.message)}}
+function logout(){accessToken=null;currentRole=null;$('adminPanel').classList.add('hidden');status('loginStatus','تم تسجيل الخروج.')}
+function adminTab(tab,el){currentAdminTab=tab;document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));if(el)el.classList.add('active');loadAdmin(tab)}
+async function loadAdmin(tab){try{if(!accessToken)throw Error('سجل الدخول أولاً.');const map={orders:['orders','created_at,customer_name,phone,room_number,details,total,currency,status'],bookings:['bookings','created_at,customer_name,phone,room_type,check_in,check_out,guests,status'],complaints:['complaints','created_at,customer_name,phone,message,status']};const [table,cols]=map[tab];const data=await api('/rest/v1/'+table+'?select='+encodeURIComponent(cols)+'&order=created_at.desc&limit=50');$('adminList').innerHTML=data.length?data.map(r=>'<div class="item"><b>'+escapeHtml(r.customer_name||'—')+'</b><div>'+escapeHtml(r.details||r.message||r.room_type||'')+'</div><small>'+escapeHtml(r.phone||'')+' · '+escapeHtml(r.status||'')+'</small>'+(r.total!=null?'<div>'+escapeHtml(r.total)+' '+escapeHtml(r.currency||'')+'</div>':'')+'</div>').join(''):'لا توجد سجلات حتى الآن.'}catch(e){status('adminList',e.message)}}
+</script></body></html>
