@@ -32,7 +32,7 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: "8.9"
+          gradle-version: "8.7.2"
 
       - name: Verify Android project
         working-directory: HaradhHotel_StandaloneApp_Project
@@ -48,9 +48,16 @@ jobs:
             exit 1
           }
 
+      - name: Generate Gradle wrapper if missing
+        working-directory: HaradhHotel_StandaloneApp_Project
+        run: |
+          if [ ! -f gradlew ]; then
+            gradle wrapper --gradle-version 8.7.2
+          fi
+
       - name: Build APK
         working-directory: HaradhHotel_StandaloneApp_Project
-        run: gradle assembleDebug
+        run: ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
