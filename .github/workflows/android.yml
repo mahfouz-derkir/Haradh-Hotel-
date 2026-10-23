@@ -41,12 +41,13 @@ jobs:
             exit 1
           }
 
-      - name: Build APK
+            - name: Build APK
+        working-directory: HaradhHotel_StandaloneApp_Project
         run: gradle assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: HaradhHotel-debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: HaradhHotel_StandaloneApp_Project/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
