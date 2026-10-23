@@ -1,4 +1,3 @@
-
 name: Build Haradh Hotel APK
 
 on:
@@ -23,17 +22,25 @@ jobs:
           distribution: temurin
           java-version: "17"
 
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK 35
+        run: |
+          sdkmanager --install "platforms;android-35" "build-tools;35.0.0"
+
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.9"
 
       - name: Verify Android project
+        working-directory: HaradhHotel_StandaloneApp_Project
         run: |
           echo "Repository files:"
           ls -la
           test -f settings.gradle || {
-            echo "ERROR: settings.gradle is missing from repository root"
+            echo "ERROR: settings.gradle is missing from Android project root"
             exit 1
           }
           test -f app/build.gradle || {
@@ -41,7 +48,7 @@ jobs:
             exit 1
           }
 
-            - name: Build APK
+      - name: Build APK
         working-directory: HaradhHotel_StandaloneApp_Project
         run: gradle assembleDebug
 
